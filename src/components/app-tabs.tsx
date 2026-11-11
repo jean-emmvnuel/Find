@@ -1,3 +1,4 @@
+import type { Href } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import type { AndroidSymbol, SFSymbol } from 'expo-symbols';
 
@@ -7,7 +8,7 @@ export type TabConfig = {
   /** Nom du fichier de route dans le dossier du navigateur. */
   name: string;
   /** Chemin complet, utilisé par la version web. */
-  href: string;
+  href: Href;
   label: string;
   /** Icône iOS (SF Symbols). */
   sf: SFSymbol;

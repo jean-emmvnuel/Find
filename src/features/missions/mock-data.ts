@@ -1,4 +1,4 @@
-import type { Application, Conversation, Mission } from '@/types/models';
+import type { Application, Conversation, Message, Mission } from '@/types/models';
 
 /** Données de démonstration, à remplacer par l'API quand le backend sera prêt. */
 export const MISSIONS: Mission[] = [
@@ -59,5 +59,27 @@ export const APPLICATIONS: Application[] = [
 ];
 
 export const CONVERSATIONS: Conversation[] = [
-  { id: 'c1', with: 'Ivoire Events', lastMessage: 'Rendez-vous lundi à 7h45 à l’entrée.', unread: 1 },
+  {
+    id: 'c1',
+    with: 'Ivoire Events',
+    lastMessage: 'Rendez-vous lundi à 7h45 à l’entrée.',
+    time: '09:12',
+    unread: 1,
+  },
+  {
+    id: 'c2',
+    with: 'Lagune Conseil',
+    lastMessage: 'Merci, nous étudions votre profil.',
+    time: 'Hier',
+    unread: 0,
+  },
 ];
+
+export const MESSAGES: Record<string, Message[]> = {
+  c1: [
+    { id: 'm1', from: 'them', text: 'Bonjour, votre candidature est acceptée.', time: '09:02' },
+    { id: 'm2', from: 'me', text: 'Merci beaucoup ! À quelle heure dois-je arriver ?', time: '09:08' },
+    { id: 'm3', from: 'them', text: 'Rendez-vous lundi à 7h45 à l’entrée.', time: '09:12' },
+  ],
+  c2: [{ id: 'm1', from: 'them', text: 'Merci, nous étudions votre profil.', time: 'Hier' }],
+};

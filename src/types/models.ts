@@ -42,5 +42,14 @@ export type Conversation = {
   id: string;
   with: string;
   lastMessage: string;
+  time: string;
   unread: number;
+};
+
+export type Message = {
+  id: string;
+  /** `me` : l'utilisateur connecté ; `them` : l'interlocuteur. */
+  from: 'me' | 'them';
+  text: string;
+  time: string;
 };

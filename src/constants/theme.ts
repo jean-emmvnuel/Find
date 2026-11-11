@@ -17,33 +17,48 @@ export const Brand = {
 export const Colors = {
   light: {
     text: '#0E1B5B',
-    textSecondary: '#5B6485',
-    background: '#FFFFFF',
-    backgroundElement: '#F2F5FC',
-    backgroundSelected: '#E1E8F9',
-    border: '#D9DFEF',
+    textSecondary: '#55608A',
+    background: '#F4F6FB',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#E4EAF8',
+    border: '#E1E6F2',
     primary: '#2A5BEA',
     onPrimary: '#FFFFFF',
+    primarySoft: '#E8EEFD',
     accent: '#F58A07',
-    success: '#16A34A',
-    warning: '#D97706',
-    danger: '#DC2626',
+    onAccent: '#0E1B5B',
+    accentSoft: '#FEF0DC',
+    success: '#15803D',
+    successSoft: '#DCF5E4',
+    warning: '#B45309',
+    warningSoft: '#FDEFD3',
+    danger: '#C81E1E',
+    dangerSoft: '#FCE4E4',
   },
   dark: {
     text: '#FFFFFF',
-    textSecondary: '#A9B2D3',
-    background: '#0A1238',
-    backgroundElement: '#141E4D',
-    backgroundSelected: '#1F2C68',
-    border: '#2A3775',
-    primary: '#4C8DF6',
-    onPrimary: '#FFFFFF',
+    textSecondary: '#B4BCDD',
+    background: '#080E2E',
+    backgroundElement: '#121B48',
+    backgroundSelected: '#22307A',
+    border: '#263270',
+    primary: '#5B93F8',
+    onPrimary: '#06103A',
+    primarySoft: '#1B2A6B',
     accent: '#FBA91A',
+    onAccent: '#0E1B5B',
+    accentSoft: '#3D2C0E',
     success: '#4ADE80',
+    successSoft: '#10391F',
     warning: '#FBBF24',
-    danger: '#F87171',
+    warningSoft: '#3D2C0E',
+    danger: '#F98A8A',
+    dangerSoft: '#451A1A',
   },
 } as const;
+
+/** Couleurs du splash : identiques au splash natif déclaré dans app.json. */
+export const SplashBackground = { light: '#FFFFFF', dark: '#0A1238' } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
@@ -85,5 +100,31 @@ export const Radius = {
   pill: 999,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
+/** Hauteur réservée en bas des écrans pour la barre d'onglets. */
+export const BottomTabInset = Platform.select({ ios: 50, android: 80, web: 72 }) ?? 0;
 export const MaxContentWidth = 800;
+
+/** Plus Jakarta Sans : une famille par graisse, chargée dans le layout racine. */
+export const Font = {
+  regular: 'PlusJakartaSans_400Regular',
+  medium: 'PlusJakartaSans_500Medium',
+  semibold: 'PlusJakartaSans_600SemiBold',
+  bold: 'PlusJakartaSans_700Bold',
+  extrabold: 'PlusJakartaSans_800ExtraBold',
+} as const;
+
+/** Élévation unique des cartes : une ombre douce et large, teintée du bleu marine. */
+export const Shadows = {
+  card: { boxShadow: '0 1px 2px rgba(14, 27, 91, 0.05), 0 8px 24px rgba(14, 27, 91, 0.07)' },
+  raised: { boxShadow: '0 2px 4px rgba(14, 27, 91, 0.08), 0 16px 36px rgba(14, 27, 91, 0.14)' },
+} as const;
+
+/** Surface d'une carte : blanche et légèrement élevée au-dessus du fond teinté. */
+export function cardSurface(theme: { backgroundElement: string; border: string }) {
+  return {
+    backgroundColor: theme.backgroundElement,
+    borderWidth: 1,
+    borderColor: theme.border,
+    ...Shadows.card,
+  } as const;
+}

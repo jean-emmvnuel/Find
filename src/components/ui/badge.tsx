@@ -1,19 +1,26 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Radius, Spacing, type ThemeColor } from '@/constants/theme';
+import { Icon, type IconName } from '@/components/ui/icon';
+import { Font, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+
+export type Tone = 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
 type BadgeProps = {
   label: string;
-  tone?: Extract<ThemeColor, 'primary' | 'accent' | 'success' | 'warning' | 'danger'>;
+  tone?: Tone;
+  icon?: IconName;
 };
 
-export function Badge({ label, tone = 'primary' }: BadgeProps) {
+/** Étiquette d'état : le libellé porte le sens, la couleur ne fait que l'appuyer. */
+export function Badge({ label, tone = 'primary', icon }: BadgeProps) {
   const theme = useTheme();
-  const color = theme[tone];
+  // L'orange de la marque est trop clair pour du texte : on écrit par-dessus en marine.
+  const color = tone === 'accent' ? theme.text : theme[tone];
 
   return (
-    <View style={[styles.badge, { borderColor: color }]}>
+    <View style={[styles.badge, { backgroundColor: theme[`${tone}Soft`] }]}>
+      {icon ? <Icon name={icon} size={16} color={color} /> : null}
       <Text style={[styles.label, { color }]}>{label}</Text>
     </View>
   );
@@ -21,14 +28,17 @@ export function Badge({ label, tone = 'primary' }: BadgeProps) {
 
 const styles = StyleSheet.create({
   badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.half,
+    gap: Spacing.one,
+    paddingHorizontal: 10,
+    paddingVertical: Spacing.one,
     borderRadius: Radius.pill,
-    borderWidth: 1,
   },
   label: {
     fontSize: 12,
-    fontWeight: 700,
+    lineHeight: 16,
+    fontFamily: Font.bold,
   },
 });
