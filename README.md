@@ -1,56 +1,80 @@
-# Welcome to your Expo app 👋
+# Find
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Application mobile et web de mise en relation entre étudiants et entreprises pour des missions courtes en Côte d'Ivoire. Ce dépôt contient le **frontend** (Expo SDK 58, React Native, Expo Router, TypeScript).
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Démarrer
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+| Commande | Rôle |
+| --- | --- |
+| `npx expo start` | serveur de développement (iOS, Android, web) |
+| `npx expo lint` | lint |
+| `npm run typecheck` | vérification TypeScript |
+| `npx expo install <paquet>` | ajouter une dépendance compatible avec le SDK |
 
-### Other setup steps
+## Architecture
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```
+assets/
+  brand/            sources vectorielles du logo (SVG) : logo, symbole, icônes d'app
+  images/           PNG générés depuis assets/brand (icône, splash, logo in-app)
+src/
+  app/              routes Expo Router — uniquement des écrans et des layouts
+    _layout.tsx       providers + gardes de navigation
+    index.tsx         redirection selon l'état (onboarding / auth / rôle)
+    onboarding.tsx    tutoriel de premier lancement
+    (auth)/           welcome, sign-in, sign-up
+    student/          onglets étudiant : missions, candidatures, messages, profil
+    company/          onglets entreprise : tableau de bord, missions, messages, profil
+    mission/[id].tsx  fiche mission
+  components/
+    brand/            logo
+    ui/               briques génériques : Button, TextField, Badge, Screen
+    app-tabs(.web)    barre d'onglets native / web
+  features/         code métier par domaine (auth, missions, messaging, profile)
+  services/         accès aux données : client HTTP + fonctions par ressource
+  i18n/             traductions FR / EN et hook useI18n
+  constants/        design tokens (couleurs, espacements, rayons)
+  hooks/            hooks transverses (thème, schéma de couleurs)
+  types/            modèles métier partagés
+```
 
-## Learn more
+### Règles
 
-To learn more about developing your project with Expo, look at the following resources:
+- **Les routes restent fines.** Un fichier de `src/app/` assemble des composants ; la logique vit dans `features/` et `services/`.
+- **Les écrans ne lisent pas les données directement.** Ils passent par `src/services/`. Aujourd'hui ces fonctions renvoient des données de démonstration ; brancher le backend revient à remplacer leur corps par `apiFetch` (`EXPO_PUBLIC_API_URL`).
+- **Aucun texte en dur.** Toute chaîne visible passe par `t('clé')` ; `fr.ts` est la référence et TypeScript impose les mêmes clés dans `en.ts`.
+- **Aucune couleur en dur.** Utiliser `useTheme()` et les tokens de `constants/theme.ts`, dérivés du logo.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Navigation
 
-## Join the community
+`src/app/_layout.tsx` protège chaque groupe avec `Stack.Protected` :
 
-Join our community of developers creating universal apps.
+| Garde | Écrans accessibles |
+| --- | --- |
+| onboarding non vu | `onboarding` |
+| onboarding vu, pas de session | `(auth)` |
+| session étudiant | `student`, `mission/[id]` |
+| session entreprise | `company`, `mission/[id]` |
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Ces gardes sont côté client : elles organisent le parcours, elles ne remplacent pas le contrôle d'accès du backend.
+
+### Ce qui est simulé pour l'instant
+
+- La session et l'onboarding sont en mémoire (`features/auth/session-context.tsx`) : ils sont réinitialisés à chaque redémarrage.
+- La connexion n'appelle aucun serveur ; les missions, candidatures et conversations viennent de `features/missions/mock-data.ts`.
+
+## Logo
+
+Les sources sont dans `assets/brand/`. Pour régénérer les PNG après une modification, rendre chaque SVG à la taille voulue (icône 1024 px, foreground Android 512 px, favicon 48 px) et remplacer le fichier correspondant dans `assets/images/`.
+
+| Couleur | Hex |
+| --- | --- |
+| Bleu marine | `#0E1B5B` |
+| Bleu | `#2A5BEA` |
+| Bleu ciel | `#22A7F7` |
+| Orange | `#F58A07` |

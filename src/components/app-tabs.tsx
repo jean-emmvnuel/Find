@@ -1,32 +1,36 @@
 import { NativeTabs } from 'expo-router/native-tabs';
-import { useColorScheme } from 'react-native';
+import type { AndroidSymbol, SFSymbol } from 'expo-symbols';
 
-import { Colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
-export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'dark' ? 'dark' : 'light'];
+export type TabConfig = {
+  /** Nom du fichier de route dans le dossier du navigateur. */
+  name: string;
+  /** Chemin complet, utilisé par la version web. */
+  href: string;
+  label: string;
+  /** Icône iOS (SF Symbols). */
+  sf: SFSymbol;
+  /** Icône Android (Material Symbols). */
+  md: AndroidSymbol;
+};
+
+/** Barre d'onglets native, partagée par les espaces étudiant et entreprise. */
+export default function AppTabs({ tabs }: { tabs: TabConfig[] }) {
+  const theme = useTheme();
 
   return (
     <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
+      backgroundColor={theme.background}
+      indicatorColor={theme.backgroundSelected}
+      tintColor={theme.primary}
+      labelStyle={{ selected: { color: theme.primary } }}>
+      {tabs.map((tab) => (
+        <NativeTabs.Trigger key={tab.name} name={tab.name}>
+          <NativeTabs.Trigger.Label>{tab.label}</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf={tab.sf} md={tab.md} />
+        </NativeTabs.Trigger>
+      ))}
     </NativeTabs>
   );
 }

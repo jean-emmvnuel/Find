@@ -1,0 +1,65 @@
+/** Langue de référence : ses clés définissent le type `TranslationKey`. */
+export const fr = {
+  'common.next': 'Suivant',
+  'common.skip': 'Passer',
+  'common.start': 'Commencer',
+  'common.search': 'Rechercher une mission, une entreprise…',
+  'common.verified': 'Vérifié',
+  'common.empty': 'Rien à afficher pour le moment.',
+
+  'onboarding.1.title': 'Trouve une mission en quelques minutes',
+  'onboarding.1.body': 'Des jobs courts près de chez toi, adaptés à ton emploi du temps d’étudiant.',
+  'onboarding.2.title': 'Des profils et des entreprises vérifiés',
+  'onboarding.2.body': 'Chaque compte est contrôlé pour que tu postules et recrutes en confiance.',
+  'onboarding.3.title': 'Payé par Mobile Money',
+  'onboarding.3.body': 'Suis tes paiements Orange Money et Wave directement dans l’app.',
+
+  'auth.tagline': 'Les missions étudiantes en Côte d’Ivoire',
+  'auth.iAmStudent': 'Je suis étudiant·e',
+  'auth.iAmCompany': 'Je suis une entreprise',
+  'auth.haveAccount': 'J’ai déjà un compte',
+  'auth.signIn': 'Se connecter',
+  'auth.signUp': 'Créer mon compte',
+  'auth.signUpStudent': 'Inscription étudiant',
+  'auth.signUpCompany': 'Inscription entreprise',
+  'auth.emailOrPhone': 'Email ou numéro de téléphone',
+  'auth.password': 'Mot de passe',
+  'auth.fullName': 'Nom et prénom',
+  'auth.companyName': 'Nom de l’entreprise',
+  'auth.signOut': 'Se déconnecter',
+
+  'tabs.missions': 'Missions',
+  'tabs.applications': 'Candidatures',
+  'tabs.messages': 'Messages',
+  'tabs.profile': 'Profil',
+  'tabs.dashboard': 'Tableau de bord',
+
+  'missions.title': 'Missions disponibles',
+  'missions.apply': 'Postuler',
+  'missions.applied': 'Candidature envoyée',
+  'missions.notFound': 'Mission introuvable',
+  'missions.applicants': 'candidats',
+  'missions.publish': 'Publier une mission',
+  'missions.mine': 'Mes missions',
+  'missions.per.hour': '/ heure',
+  'missions.per.day': '/ jour',
+  'missions.per.mission': '/ mission',
+
+  'applications.title': 'Mes candidatures',
+  'status.pending': 'En attente',
+  'status.accepted': 'Accepté',
+  'status.refused': 'Refusé',
+  'status.ongoing': 'En cours',
+  'status.done': 'Terminé',
+
+  'dashboard.activeMissions': 'Missions actives',
+  'dashboard.applications': 'Candidatures reçues',
+  'dashboard.filled': 'Missions pourvues',
+
+  'messages.title': 'Messages',
+  'profile.title': 'Mon profil',
+  'profile.language': 'Langue',
+  'profile.completion': 'Profil complété à {percent} %',
+} as const;
+
+export type TranslationKey = keyof typeof fr;

@@ -1,26 +1,47 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://unistyl.es/), etc.
+ * Design tokens de Find, dérivés de la charte (logo) :
+ * bleu marine du mot « Fin », bleu de la loupe, orange du « ! ».
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
+export const Brand = {
+  navy: '#0E1B5B',
+  blue: '#2A5BEA',
+  sky: '#22A7F7',
+  orange: '#F58A07',
+} as const;
+
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    text: '#0E1B5B',
+    textSecondary: '#5B6485',
+    background: '#FFFFFF',
+    backgroundElement: '#F2F5FC',
+    backgroundSelected: '#E1E8F9',
+    border: '#D9DFEF',
+    primary: '#2A5BEA',
+    onPrimary: '#FFFFFF',
+    accent: '#F58A07',
+    success: '#16A34A',
+    warning: '#D97706',
+    danger: '#DC2626',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text: '#FFFFFF',
+    textSecondary: '#A9B2D3',
+    background: '#0A1238',
+    backgroundElement: '#141E4D',
+    backgroundSelected: '#1F2C68',
+    border: '#2A3775',
+    primary: '#4C8DF6',
+    onPrimary: '#FFFFFF',
+    accent: '#FBA91A',
+    success: '#4ADE80',
+    warning: '#FBBF24',
+    danger: '#F87171',
   },
 } as const;
 
@@ -28,13 +49,9 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -59,6 +76,13 @@ export const Spacing = {
   four: 24,
   five: 32,
   six: 64,
+} as const;
+
+export const Radius = {
+  small: 8,
+  medium: 14,
+  large: 22,
+  pill: 999,
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
