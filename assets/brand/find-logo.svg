@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 664 340" role="img" aria-labelledby="t">
+  <title id="t">Find!</title>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22A7F7"/>
+      <stop offset="1" stop-color="#2A5BEA"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBA91A"/>
+      <stop offset="1" stop-color="#F58A07"/>
+    </linearGradient>
+  </defs>
+
+  <!-- F i n : traits arrondis, inclinés de 10° -->
+  <g transform="translate(40.6 0) skewX(-10)" fill="none" stroke="#0E1B5B" stroke-width="38" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M74 230V84H158M74 156H140"/>
+    <path d="M212 230V146"/>
+    <path d="M278 230V146M278 186a42 42 0 0 1 84 0V230"/>
+  </g>
+  <circle cx="238" cy="90" r="21" fill="#0E1B5B"/>
+
+  <g transform="translate(26 0)">
+  <!-- d = loupe -->
+  <path d="M474 234L508 276" fill="none" stroke="#2A5BEA" stroke-width="30" stroke-linecap="round"/>
+  <path d="M487 196L509 66" fill="none" stroke="url(#blue)" stroke-width="32" stroke-linecap="round"/>
+  <circle cx="436" cy="190" r="54" fill="#fff" stroke="url(#blue)" stroke-width="26"/>
+  <!-- visage -->
+  <circle cx="419" cy="178" r="7" fill="#0E1B5B"/>
+  <path d="M442 172l15 7-15 6" fill="none" stroke="#0E1B5B" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M414 199q22 22 44-2" fill="none" stroke="#0E1B5B" stroke-width="7.5" stroke-linecap="round"/>
+  <!-- éclats -->
+  <g fill="none" stroke="#1E90F5" stroke-width="8" stroke-linecap="round">
+    <path d="M404 112l-16-13M430 104l-5-21M455 104l6-19"/>
+  </g>
+
+  <!-- ! -->
+  <path d="M574 84L556 180" fill="none" stroke="url(#orange)" stroke-width="38" stroke-linecap="round"/>
+  <circle cx="546" cy="236" r="21" fill="#F58A07"/>
+
+  </g>
+
+  <!-- soulignement -->
+  <path d="M100 300C196 268 330 258 416 264a9 9 0 0 1-1 18C316 276 200 284 106 310a5.5 5.5 0 0 1-6-10Z" fill="url(#blue)"/>
+</svg>
