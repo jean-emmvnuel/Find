@@ -30,7 +30,8 @@ src/
     (auth)/           welcome, sign-in, sign-up
     student/          onglets étudiant : missions, candidatures, messages, profil
     company/          onglets entreprise : tableau de bord, missions, messages, profil
-    mission/[id].tsx  fiche mission ; mission/new.tsx : publication (entreprise)
+    mission/[id].tsx  fiche mission (côté entreprise : vues et candidats) ; mission/new.tsx : publication
+    candidate/[id]    fiche d'un candidat : recruter ou refuser (entreprise)
     conversation/[id] fil de discussion
   components/
     brand/            logo, splash animé
@@ -62,18 +63,21 @@ src/
 | onboarding non vu | `onboarding` |
 | onboarding vu, pas de session | `(auth)` |
 | session étudiant | `student`, `mission/[id]` |
-| session entreprise | `company`, `mission/[id]` |
+| session entreprise | `company`, `mission/[id]`, `mission/new`, `candidate/[id]` |
 
 Ces gardes sont côté client : elles organisent le parcours, elles ne remplacent pas le contrôle d'accès du backend.
 
 ### Ce qui est simulé pour l'instant
 
 - La session et l'onboarding sont en mémoire (`features/auth/session-context.tsx`) : ils sont réinitialisés à chaque redémarrage.
-- La connexion n'appelle aucun serveur ; les missions, candidatures et conversations viennent de `features/missions/mock-data.ts`.
+- La connexion n'appelle aucun serveur ; les missions, candidatures, candidats et conversations viennent de `features/missions/mock-data.ts`.
+- Côté entreprise, toutes les missions de démonstration sont présentées comme celles de l'entreprise connectée.
 
 ## Design et mouvement
 
 ![Aperçu des écrans](docs/apercu-ecrans.jpg)
+
+![Aperçu de l'espace entreprise](docs/apercu-entreprise.jpg)
 
 - **Police** : Plus Jakarta Sans, une famille par graisse (`Font.*`), chargée dans `src/app/_layout.tsx`.
 - **Surfaces** : fond teinté, cartes blanches légèrement élevées. Le bleu marine et l'orange de la marque sont réservés aux mises en avant et à l'action.

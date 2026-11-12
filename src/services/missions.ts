@@ -1,5 +1,5 @@
-import { APPLICATIONS, CONVERSATIONS, MESSAGES, MISSIONS } from '@/features/missions/mock-data';
-import type { Application, Conversation, Message, Mission } from '@/types/models';
+import { APPLICATIONS, CANDIDATES, CONVERSATIONS, MESSAGES, MISSIONS } from '@/features/missions/mock-data';
+import type { Application, Candidate, Conversation, Message, Mission } from '@/types/models';
 
 /**
  * Couche d'accès aux données. Les écrans ne lisent jamais les mocks directement :
@@ -12,6 +12,11 @@ export function listMissions(): Mission[] {
 
 export function listApplications(): Application[] {
   return APPLICATIONS;
+}
+
+/** Candidatures reçues par l'entreprise connectée, toutes missions confondues. */
+export function listCandidates(): Candidate[] {
+  return CANDIDATES;
 }
 
 export function listConversations(): Conversation[] {

@@ -20,3 +20,8 @@ export function formatPosted(daysAgo: number, t: TranslateWithParams): string {
 export function formatRating(rating: number, locale: string): string {
   return rating.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
+
+/** « A postulé aujourd'hui », « A postulé il y a 2 j » */
+export function formatApplied(daysAgo: number, t: TranslateWithParams): string {
+  return daysAgo <= 0 ? t('company.appliedToday') : t('company.appliedDaysAgo', { count: daysAgo });
+}

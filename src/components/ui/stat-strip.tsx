@@ -5,7 +5,7 @@ import { cardSurface, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 type StatStripProps = {
-  items: { label: string; value: number }[];
+  items: { label: string; value: number | string }[];
   accessibilityLabel: string;
 };
 

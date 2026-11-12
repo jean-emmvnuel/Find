@@ -19,9 +19,11 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { Reveal } from '@/components/ui/reveal';
 import { Screen } from '@/components/ui/screen';
+import { StatStrip } from '@/components/ui/stat-strip';
 import { Durations, Springs } from '@/constants/motion';
 import { cardSurface, Radius, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-context';
+import { CandidateRow } from '@/features/company/candidate-row';
 import { CompanyRating } from '@/features/missions/company-rating';
 import { formatPay, formatPosted } from '@/features/missions/format';
 import { useMissions } from '@/features/missions/missions-context';
@@ -34,7 +36,7 @@ export default function MissionDetailScreen() {
   const theme = useTheme();
   const { t } = useI18n();
   const { session } = useSession();
-  const { getMission, hasApplied, apply } = useMissions();
+  const { getMission, hasApplied, apply, candidatesFor, closeMission } = useMissions();
   const reducedMotion = useReducedMotion();
   const [sending, setSending] = useState(false);
   const confirm = useSharedValue(1);
@@ -52,6 +54,11 @@ export default function MissionDetailScreen() {
 
   const isStudent = session?.role === 'student';
   const applied = hasApplied(mission.id);
+  // Nouveaux candidats d'abord, puis recrutés, puis refusés.
+  const order = { new: 0, hired: 1, declined: 2 } as const;
+  const candidates = [...candidatesFor(mission.id)].sort(
+    (a, b) => order[a.status] - order[b.status] || a.appliedDaysAgo - b.appliedDaysAgo,
+  );
 
   const submit = () => {
     setSending(true);
@@ -107,6 +114,13 @@ export default function MissionDetailScreen() {
               </View>
             )}
           </Animated.View>
+        ) : mission.status === 'active' ? (
+          <Button
+            title={t('company.close')}
+            variant="secondary"
+            icon="check"
+            onPress={() => closeMission(mission.id)}
+          />
         ) : undefined
       }>
       <Reveal style={styles.block}>
@@ -119,16 +133,51 @@ export default function MissionDetailScreen() {
         </ThemedText>
       </Reveal>
 
-      <Reveal index={1} style={[styles.companyCard, cardSurface(theme)]}>
-        <Avatar name={mission.company} shape="square" size={48} />
-        <View style={styles.companyText}>
-          <ThemedText type="bodyBold">{mission.company}</ThemedText>
-          <CompanyRating mission={mission} />
-          {mission.companyVerified ? (
-            <Badge label={t('profile.verifiedCompany')} tone="success" icon="verified" />
-          ) : null}
-        </View>
-      </Reveal>
+      {isStudent ? (
+        <Reveal index={1} style={[styles.companyCard, cardSurface(theme)]}>
+          <Avatar name={mission.company} shape="square" size={48} />
+          <View style={styles.companyText}>
+            <ThemedText type="bodyBold">{mission.company}</ThemedText>
+            <CompanyRating mission={mission} />
+            {mission.companyVerified ? (
+              <Badge label={t('profile.verifiedCompany')} tone="success" icon="verified" />
+            ) : null}
+          </View>
+        </Reveal>
+      ) : (
+        <Reveal index={1}>
+          <StatStrip
+            accessibilityLabel={t('dashboard.overview')}
+            items={[
+              { label: t('company.viewsLabel'), value: mission.views },
+              { label: t('company.candidates'), value: candidates.length },
+              {
+                label: t('company.newCandidates'),
+                value: candidates.filter((candidate) => candidate.status === 'new').length,
+              },
+            ]}
+          />
+        </Reveal>
+      )}
+
+      {isStudent ? null : (
+        <Reveal index={2} style={styles.block}>
+          <ThemedText type="heading">{t('company.candidates')}</ThemedText>
+          {candidates.length === 0 ? (
+            <EmptyState
+              icon="people"
+              title={t('company.noCandidates')}
+              hint={t('company.noCandidatesHint')}
+            />
+          ) : (
+            <View style={styles.candidates}>
+              {candidates.map((candidate) => (
+                <CandidateRow key={candidate.id} candidate={candidate} />
+              ))}
+            </View>
+          )}
+        </Reveal>
+      )}
 
       <Reveal index={2} style={styles.facts}>
         {facts.map((fact) => (
@@ -196,6 +245,9 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     borderRadius: Radius.medium,
     gap: Spacing.one,
+  },
+  candidates: {
+    gap: Spacing.three,
   },
   skills: {
     flexDirection: 'row',

@@ -1,7 +1,7 @@
 import { createContext, use, useState, type ReactNode } from 'react';
 
-import { listApplications, listMissions } from '@/services/missions';
-import type { Application, Mission } from '@/types/models';
+import { listApplications, listCandidates, listMissions } from '@/services/missions';
+import type { Application, Candidate, CandidateStatus, Mission } from '@/types/models';
 
 export type NewMission = Pick<
   Mission,
@@ -18,6 +18,13 @@ type MissionsState = {
   hasApplied: (id: string) => boolean;
   apply: (id: string) => void;
   publish: (mission: NewMission, company: string) => void;
+  /** Côté entreprise : candidatures reçues et décisions. */
+  candidates: Candidate[];
+  getCandidate: (id: string) => Candidate | undefined;
+  candidatesFor: (missionId: string) => Candidate[];
+  decide: (candidateId: string, status: CandidateStatus) => void;
+  /** Ferme une mission active : elle passe en « pourvue ». */
+  closeMission: (id: string) => void;
 };
 
 const MissionsContext = createContext<MissionsState | null>(null);
@@ -30,6 +37,7 @@ export function MissionsProvider({ children }: { children: ReactNode }) {
   const [missions, setMissions] = useState(listMissions);
   const [applications, setApplications] = useState(listApplications);
   const [saved, setSaved] = useState<string[]>([]);
+  const [candidates, setCandidates] = useState(listCandidates);
 
   const value: MissionsState = {
     missions,
@@ -71,9 +79,21 @@ export function MissionsProvider({ children }: { children: ReactNode }) {
           postedDaysAgo: 0,
           companyRating: null,
           companyMissions: current.filter((item) => item.company === company).length + 1,
+          views: 0,
         },
         ...current,
       ]),
+    candidates,
+    getCandidate: (id) => candidates.find((candidate) => candidate.id === id),
+    candidatesFor: (missionId) => candidates.filter((candidate) => candidate.missionId === missionId),
+    decide: (candidateId, status) =>
+      setCandidates((current) =>
+        current.map((candidate) => (candidate.id === candidateId ? { ...candidate, status } : candidate)),
+      ),
+    closeMission: (id) =>
+      setMissions((current) =>
+        current.map((mission) => (mission.id === id ? { ...mission, status: 'filled' } : mission)),
+      ),
   };
 
   return <MissionsContext value={value}>{children}</MissionsContext>;

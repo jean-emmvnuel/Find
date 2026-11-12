@@ -31,7 +31,9 @@ export default function StudentHomeScreen() {
   const theme = useTheme();
   const { t } = useI18n();
   const { session } = useSession();
-  const { missions, isSaved } = useMissions();
+  const { missions: allMissions, isSaved } = useMissions();
+  // Les missions pourvues ou expirées ne sont plus proposées aux étudiants.
+  const missions = allMissions.filter((mission) => mission.status === 'active');
   const [query, setQuery] = useState('');
   const [sector, setSector] = useState<string | null>(null);
   const [feed, setFeed] = useState<Feed>('forYou');

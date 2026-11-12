@@ -35,6 +35,28 @@ export type Mission = {
   companyRating: number | null;
   /** Nombre de missions déjà publiées par l'entreprise. */
   companyMissions: number;
+  /** Nombre de fois où l'annonce a été ouverte. */
+  views: number;
+};
+
+/** Décision de l'entreprise sur une candidature reçue. */
+export type CandidateStatus = 'new' | 'hired' | 'declined';
+
+/** Candidature vue depuis l'entreprise : l'étudiant et son message. */
+export type Candidate = {
+  id: string;
+  missionId: string;
+  name: string;
+  school: string;
+  field: string;
+  verified: boolean;
+  /** Note moyenne laissée par les entreprises, sur 5 ; `null` pour une première mission. */
+  rating: number | null;
+  completedMissions: number;
+  appliedDaysAgo: number;
+  pitch: string;
+  skills: string[];
+  status: CandidateStatus;
 };
 
 export type Application = {

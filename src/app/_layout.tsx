@@ -81,6 +81,7 @@ function RootNavigator() {
 
       <Stack.Protected guard={session?.role === 'company'}>
         <Stack.Screen name="mission/new" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="candidate/[id]" />
       </Stack.Protected>
     </Stack>
   );
