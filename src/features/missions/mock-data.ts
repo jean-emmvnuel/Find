@@ -18,6 +18,9 @@ export const MISSIONS: Mission[] = [
     skills: ['Accueil', 'Français', 'Anglais'],
     status: 'active',
     applicants: 12,
+    postedDaysAgo: 2,
+    companyRating: 4.8,
+    companyMissions: 24,
   },
   {
     id: 'm2',
@@ -34,6 +37,9 @@ export const MISSIONS: Mission[] = [
     skills: ['Rigueur', 'Saisie'],
     status: 'active',
     applicants: 5,
+    postedDaysAgo: 0,
+    companyRating: 4.5,
+    companyMissions: 9,
   },
   {
     id: 'm3',
@@ -50,6 +56,9 @@ export const MISSIONS: Mission[] = [
     skills: ['Excel', 'Saisie', 'Organisation'],
     status: 'active',
     applicants: 8,
+    postedDaysAgo: 5,
+    companyRating: null,
+    companyMissions: 2,
   },
 ];
 

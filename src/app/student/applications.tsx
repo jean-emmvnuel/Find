@@ -12,6 +12,7 @@ import { Reveal } from '@/components/ui/reveal';
 import { Screen } from '@/components/ui/screen';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { cardSurface, Radius, Spacing } from '@/constants/theme';
+import { ApplicationSteps } from '@/features/missions/application-steps';
 import { formatPay } from '@/features/missions/format';
 import { useMissions } from '@/features/missions/missions-context';
 import { useTheme } from '@/hooks/use-theme';
@@ -89,14 +90,23 @@ export default function StudentApplicationsScreen() {
                     {mission.company}
                   </ThemedText>
                 </View>
-              </View>
-              <View style={styles.footer}>
                 <Badge label={t(`status.${application.status}`)} tone={STATUS_TONE[application.status]} />
+              </View>
+              {application.status === 'refused' ? (
                 <ThemedText type="small" themeColor="textSecondary">
+                  {t('applications.refusedHint')}
+                </ThemedText>
+              ) : (
+                <ApplicationSteps status={application.status} />
+              )}
+              <View style={[styles.footer, { borderTopColor: theme.border }]}>
+                <ThemedText type="bodyBold" themeColor="primary">
+                  {formatPay(mission, t)}
+                </ThemedText>
+                <ThemedText type="caption" themeColor="textSecondary">
                   {t('applications.appliedOn', { date: formatDate(application.appliedAt) })}
                 </ThemedText>
               </View>
-              <ThemedText type="smallBold">{formatPay(mission, t)}</ThemedText>
             </PressableScale>
           </Reveal>
         );
@@ -125,5 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.two,
+    paddingTop: Spacing.three,
+    borderTopWidth: 1,
   },
 });

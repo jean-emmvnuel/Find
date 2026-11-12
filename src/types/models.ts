@@ -29,6 +29,12 @@ export type Mission = {
   skills: string[];
   status: MissionStatus;
   applicants: number;
+  /** Ancienneté de l'annonce, en jours (0 = aujourd'hui). */
+  postedDaysAgo: number;
+  /** Note moyenne laissée par les étudiants, sur 5 ; `null` tant qu'il n'y a pas d'avis. */
+  companyRating: number | null;
+  /** Nombre de missions déjà publiées par l'entreprise. */
+  companyMissions: number;
 };
 
 export type Application = {

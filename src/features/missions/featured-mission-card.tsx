@@ -67,6 +67,9 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     borderRadius: Radius.large,
     backgroundColor: Brand.navy,
+    // Liseré clair : détache la carte du fond en mode sombre.
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.14)',
     gap: Spacing.three,
     ...Shadows.raised,
   },

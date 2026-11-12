@@ -5,16 +5,16 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Icon } from '@/components/ui/icon';
 import { PressableScale } from '@/components/ui/pressable-scale';
 import { Reveal } from '@/components/ui/reveal';
 import { Screen } from '@/components/ui/screen';
-import { StatStrip } from '@/components/ui/stat-strip';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-context';
+import { CategoryTile } from '@/features/missions/category-tile';
 import {
   FEATURED_CARD_WIDTH,
   FeaturedMissionCard,
@@ -25,28 +25,38 @@ import { useTheme } from '@/hooks/use-theme';
 import { useI18n } from '@/i18n';
 import { filterMissions } from '@/services/missions';
 
+type Feed = 'forYou' | 'recent' | 'saved';
+
 export default function StudentHomeScreen() {
   const theme = useTheme();
   const { t } = useI18n();
   const { session } = useSession();
-  const { missions, applications, savedCount } = useMissions();
+  const { missions, isSaved } = useMissions();
   const [query, setQuery] = useState('');
   const [sector, setSector] = useState<string | null>(null);
+  const [feed, setFeed] = useState<Feed>('forYou');
 
   const sectors = [...new Set(missions.map((mission) => mission.sector))];
-  const results = filterMissions(missions, query, sector);
-  const browsing = query.trim() === '' && sector === null;
-  const featured = missions.filter((mission) => mission.companyVerified).slice(0, 3);
   const name = session?.displayName ?? '';
+  const filtering = query.trim() !== '' || sector !== null;
 
-  const activity = [
-    { label: t('home.applications'), value: applications.length },
-    {
-      label: t('home.accepted'),
-      value: applications.filter((application) => application.status === 'accepted').length,
-    },
-    { label: t('home.saved'), value: savedCount },
-  ];
+  const matching = filterMissions(missions, query, sector);
+  const results = {
+    // Entreprises vérifiées d'abord, puis les mieux notées.
+    forYou: [...matching].sort(
+      (a, b) =>
+        Number(b.companyVerified) - Number(a.companyVerified) ||
+        (b.companyRating ?? 0) - (a.companyRating ?? 0),
+    ),
+    recent: [...matching].sort((a, b) => a.postedDaysAgo - b.postedDaysAgo),
+    saved: matching.filter((mission) => isSaved(mission.id)),
+  }[feed];
+  const featured = missions.filter((mission) => mission.companyVerified).slice(0, 3);
+
+  const clearFilters = () => {
+    setQuery('');
+    setSector(null);
+  };
 
   return (
     <Screen withTabBar>
@@ -82,45 +92,24 @@ export default function StudentHomeScreen() {
         />
       </Reveal>
 
-      {browsing ? (
-        <>
-          <Reveal index={2}>
-            <StatStrip items={activity} accessibilityLabel={t('home.activity')} />
-          </Reveal>
-
-          <Reveal index={3} style={styles.section}>
-            <ThemedText type="heading">{t('home.recommended')}</ThemedText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={FEATURED_CARD_WIDTH + Spacing.three}
-              decelerationRate="fast"
-              style={styles.bleed}
-              contentContainerStyle={styles.carousel}>
-              {featured.map((mission) => (
-                <FeaturedMissionCard key={mission.id} mission={mission} />
-              ))}
-            </ScrollView>
-          </Reveal>
-        </>
-      ) : null}
-
-      <Reveal index={4} style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <ThemedText type="heading">{t('home.all')}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('missions.count', { count: results.length })}
-          </ThemedText>
-        </View>
+      <Reveal index={2} style={styles.section}>
+        <ThemedText type="heading">{t('home.categories')}</ThemedText>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.bleed}
-          contentContainerStyle={styles.chips}>
-          <Chip label={t('common.all')} selected={sector === null} onPress={() => setSector(null)} />
-          {sectors.map((item) => (
-            <Chip
+          contentContainerStyle={styles.row}>
+          <CategoryTile
+            all
+            index={0}
+            label={t('common.all')}
+            selected={sector === null}
+            onPress={() => setSector(null)}
+          />
+          {sectors.map((item, index) => (
+            <CategoryTile
               key={item}
+              index={index + 1}
               label={item}
               selected={sector === item}
               onPress={() => setSector(sector === item ? null : item)}
@@ -129,29 +118,59 @@ export default function StudentHomeScreen() {
         </ScrollView>
       </Reveal>
 
-      {results.length === 0 ? (
-        <EmptyState
-          icon="search"
-          title={t('missions.noResult')}
-          action={
-            <Button
-              title={t('missions.clearFilters')}
-              variant="ghost"
-              onPress={() => {
-                setQuery('');
-                setSector(null);
-              }}
-            />
-          }
+      {filtering ? null : (
+        <Reveal index={3} style={styles.section}>
+          <ThemedText type="heading">{t('home.recommended')}</ThemedText>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={FEATURED_CARD_WIDTH + Spacing.three}
+            decelerationRate="fast"
+            style={styles.bleed}
+            contentContainerStyle={styles.row}>
+            {featured.map((mission) => (
+              <FeaturedMissionCard key={mission.id} mission={mission} />
+            ))}
+          </ScrollView>
+        </Reveal>
+      )}
+
+      <Reveal index={4} style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <ThemedText type="heading">{t('home.all')}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {t('missions.count', { count: results.length })}
+          </ThemedText>
+        </View>
+        <SegmentedControl
+          accessibilityLabel={t('home.feed')}
+          value={feed}
+          onChange={setFeed}
+          options={[
+            { value: 'forYou', label: t('home.forYou') },
+            { value: 'recent', label: t('home.recent') },
+            { value: 'saved', label: t('home.savedTab') },
+          ]}
         />
-      ) : (
+      </Reveal>
+
+      {results.length > 0 ? (
         <View style={styles.list}>
           {results.map((mission, index) => (
-            <Reveal key={mission.id} index={index + 5}>
+            // La clé inclut l'onglet : changer de flux rejoue l'apparition de la liste.
+            <Reveal key={`${feed}-${mission.id}`} index={index}>
               <MissionCard mission={mission} />
             </Reveal>
           ))}
         </View>
+      ) : feed === 'saved' && !filtering ? (
+        <EmptyState icon="bookmark" title={t('home.savedEmpty')} hint={t('home.savedHint')} />
+      ) : (
+        <EmptyState
+          icon="search"
+          title={t('missions.noResult')}
+          action={<Button title={t('missions.clearFilters')} variant="ghost" onPress={clearFilters} />}
+        />
       )}
     </Screen>
   );
@@ -181,18 +200,16 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     justifyContent: 'space-between',
   },
-  // Carrousel et filtres défilent jusqu'au bord de l'écran, au-delà de la marge.
+  // Les rangées horizontales défilent jusqu'au bord de l'écran, au-delà de la marge.
   bleed: {
     marginHorizontal: -Spacing.four,
   },
-  carousel: {
+  row: {
     gap: Spacing.three,
     paddingHorizontal: Spacing.four,
+    // Laisse la place à l'ombre des cartes, que le défilement rognerait.
     paddingBottom: Spacing.four,
-  },
-  chips: {
-    gap: Spacing.two,
-    paddingHorizontal: Spacing.four,
+    marginBottom: -Spacing.three,
   },
   list: {
     gap: Spacing.three,

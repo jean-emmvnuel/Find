@@ -22,7 +22,8 @@ import { Screen } from '@/components/ui/screen';
 import { Durations, Springs } from '@/constants/motion';
 import { cardSurface, Radius, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-context';
-import { formatPay } from '@/features/missions/format';
+import { CompanyRating } from '@/features/missions/company-rating';
+import { formatPay, formatPosted } from '@/features/missions/format';
 import { useMissions } from '@/features/missions/missions-context';
 import { SaveButton } from '@/features/missions/save-button';
 import { useTheme } from '@/hooks/use-theme';
@@ -93,7 +94,17 @@ export default function MissionDetailScreen() {
                 />
               </>
             ) : (
-              <Button title={t('missions.apply')} loading={sending} onPress={submit} />
+              <View style={styles.action}>
+                <View>
+                  <ThemedText type="caption" themeColor="textSecondary">
+                    {t('missions.pay')}
+                  </ThemedText>
+                  <ThemedText type="heading">{formatPay(mission, t)}</ThemedText>
+                </View>
+                <View style={styles.actionButton}>
+                  <Button title={t('missions.apply')} loading={sending} onPress={submit} />
+                </View>
+              </View>
             )}
           </Animated.View>
         ) : undefined
@@ -103,18 +114,23 @@ export default function MissionDetailScreen() {
         <ThemedText type="title" accessibilityRole="header">
           {mission.title}
         </ThemedText>
-        <View style={styles.company}>
-          <Avatar name={mission.company} shape="square" size={40} />
-          <ThemedText type="bodyBold" style={styles.shrink}>
-            {mission.company}
-          </ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          {formatPosted(mission.postedDaysAgo, t)} · {mission.applicants} {t('missions.applicants')}
+        </ThemedText>
+      </Reveal>
+
+      <Reveal index={1} style={[styles.companyCard, cardSurface(theme)]}>
+        <Avatar name={mission.company} shape="square" size={48} />
+        <View style={styles.companyText}>
+          <ThemedText type="bodyBold">{mission.company}</ThemedText>
+          <CompanyRating mission={mission} />
           {mission.companyVerified ? (
-            <Badge label={t('common.verified')} tone="success" icon="verified" />
+            <Badge label={t('profile.verifiedCompany')} tone="success" icon="verified" />
           ) : null}
         </View>
       </Reveal>
 
-      <Reveal index={1} style={styles.facts}>
+      <Reveal index={2} style={styles.facts}>
         {facts.map((fact) => (
           <View key={fact.label} style={[styles.fact, cardSurface(theme)]}>
             <Icon name={fact.icon} color={theme.primary} />
@@ -126,13 +142,13 @@ export default function MissionDetailScreen() {
         ))}
       </Reveal>
 
-      <Reveal index={2} style={styles.block}>
+      <Reveal index={3} style={styles.block}>
         <ThemedText type="heading">{t('missions.about')}</ThemedText>
         <ThemedText themeColor="textSecondary">{mission.description}</ThemedText>
       </Reveal>
 
       {mission.skills.length > 0 ? (
-        <Reveal index={3} style={styles.block}>
+        <Reveal index={4} style={styles.block}>
           <ThemedText type="heading">{t('missions.skills')}</ThemedText>
           <View style={styles.skills}>
             {mission.skills.map((skill) => (
@@ -142,14 +158,6 @@ export default function MissionDetailScreen() {
         </Reveal>
       ) : null}
 
-      {isStudent ? null : (
-        <Reveal index={4} style={styles.company}>
-          <Icon name="people" color={theme.textSecondary} />
-          <ThemedText themeColor="textSecondary">
-            {mission.applicants} {t('missions.applicants')}
-          </ThemedText>
-        </Reveal>
-      )}
     </Screen>
   );
 }
@@ -158,14 +166,24 @@ const styles = StyleSheet.create({
   block: {
     gap: Spacing.two,
   },
-  company: {
+  companyCard: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: Spacing.two,
+    gap: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: Radius.large,
   },
-  shrink: {
-    flexShrink: 1,
+  companyText: {
+    flex: 1,
+    gap: Spacing.one,
+  },
+  action: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+  },
+  actionButton: {
+    flex: 1,
   },
   facts: {
     flexDirection: 'row',

@@ -30,6 +30,11 @@ const ICONS = {
   document: { ios: 'doc.text.fill', md: 'description' },
   people: { ios: 'person.2.fill', md: 'group' },
   chat: { ios: 'bubble.left.and.bubble.right.fill', md: 'chat' },
+  star: { ios: 'star.fill', md: 'star' },
+  cart: { ios: 'cart.fill', md: 'shopping_cart' },
+  party: { ios: 'party.popper.fill', md: 'celebration' },
+  keyboard: { ios: 'keyboard', md: 'keyboard' },
+  grid: { ios: 'square.grid.2x2.fill', md: 'apps' },
 } as const satisfies Record<string, { ios: SFSymbol; md: AndroidSymbol }>;
 
 export type IconName = keyof typeof ICONS;

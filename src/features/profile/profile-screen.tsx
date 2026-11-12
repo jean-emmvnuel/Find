@@ -9,8 +9,10 @@ import { ProgressBar } from '@/components/ui/progress-bar';
 import { Reveal } from '@/components/ui/reveal';
 import { Screen } from '@/components/ui/screen';
 import { SegmentedControl } from '@/components/ui/segmented-control';
+import { StatStrip } from '@/components/ui/stat-strip';
 import { cardSurface, Radius, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-context';
+import { useMissions } from '@/features/missions/missions-context';
 import { useTheme } from '@/hooks/use-theme';
 import { useI18n, type Locale, type TranslationKey } from '@/i18n';
 
@@ -34,6 +36,7 @@ export function ProfileScreen() {
   const theme = useTheme();
   const { session, signOut } = useSession();
   const { t, locale, setLocale } = useI18n();
+  const { applications, savedCount } = useMissions();
   const isStudent = session?.role === 'student';
   const rows = isStudent ? STUDENT_ROWS : COMPANY_ROWS;
   const completion = t('profile.completion', { percent: Math.round(COMPLETION * 100) });
@@ -61,7 +64,24 @@ export function ProfileScreen() {
         </Reveal>
       ) : null}
 
-      <Reveal index={2} style={styles.section}>
+      {isStudent ? (
+        <Reveal index={2} style={styles.section}>
+          <ThemedText type="heading">{t('profile.activity')}</ThemedText>
+          <StatStrip
+            accessibilityLabel={t('profile.activity')}
+            items={[
+              { label: t('home.applications'), value: applications.length },
+              {
+                label: t('home.accepted'),
+                value: applications.filter((application) => application.status === 'accepted').length,
+              },
+              { label: t('home.saved'), value: savedCount },
+            ]}
+          />
+        </Reveal>
+      ) : null}
+
+      <Reveal index={3} style={styles.section}>
         <ThemedText type="heading">{t('profile.account')}</ThemedText>
         <View style={[styles.card, styles.list, cardSurface(theme)]}>
           {rows.map((row, index) => (
@@ -87,7 +107,7 @@ export function ProfileScreen() {
         </View>
       </Reveal>
 
-      <Reveal index={3} style={styles.section}>
+      <Reveal index={4} style={styles.section}>
         <ThemedText type="heading">{t('profile.language')}</ThemedText>
         <SegmentedControl<Locale>
           accessibilityLabel={t('profile.language')}
@@ -100,7 +120,7 @@ export function ProfileScreen() {
         />
       </Reveal>
 
-      <Reveal index={4}>
+      <Reveal index={5}>
         <Button title={t('auth.signOut')} variant="secondary" icon="logout" onPress={signOut} />
       </Reveal>
     </Screen>

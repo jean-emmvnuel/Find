@@ -148,6 +148,27 @@ export const fr = {
   'home.all': 'Toutes les missions',
   'home.openProfile': 'Ouvrir mon profil',
   'missions.view': 'Voir la mission',
+
+  'missions.postedToday': 'Aujourd’hui',
+  'missions.postedDaysAgo': 'Il y a {count} j',
+  'missions.newCompany': 'Nouvelle entreprise',
+  'missions.companySection': 'L’entreprise',
+  'missions.companyMissions': '{count} missions publiées',
+  'missions.ratingLabel': 'Note {rating} sur 5',
+  'home.categories': 'Catégories',
+  'home.forYou': 'Pour toi',
+  'home.recent': 'Récentes',
+  'home.savedTab': 'Enregistrées',
+  'home.savedEmpty': 'Aucune mission enregistrée.',
+  'home.savedHint': 'Touche le signet d’une mission pour la retrouver ici.',
+  'home.feed': 'Missions affichées',
+  'applications.step.sent': 'Envoyée',
+  'applications.step.accepted': 'Acceptée',
+  'applications.step.ongoing': 'En cours',
+  'applications.step.done': 'Terminée',
+  'applications.refusedHint': 'Cette candidature n’a pas été retenue.',
+  'applications.progress': 'Étape {current} sur {total} : {step}',
+  'profile.activity': 'Mon activité',
 } as const;
 
 export type TranslationKey = keyof typeof fr;

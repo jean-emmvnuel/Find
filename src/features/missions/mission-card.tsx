@@ -11,7 +11,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { useI18n } from '@/i18n';
 import type { Mission, MissionStatus } from '@/types/models';
 
-import { formatPay } from './format';
+import { CompanyRating } from './company-rating';
+import { formatPay, formatPosted } from './format';
 import { SaveButton } from './save-button';
 
 const STATUS_TONE: Record<MissionStatus, Tone> = {
@@ -55,12 +56,14 @@ export function MissionCard({ mission, audience = 'student' }: MissionCardProps)
             </ThemedText>
             {mission.companyVerified ? <Icon name="verified" size={16} color={theme.success} /> : null}
           </View>
-          <ThemedText type="heading" numberOfLines={2}>
-            {mission.title}
-          </ThemedText>
+          <CompanyRating mission={mission} />
         </View>
         {audience === 'student' ? <SaveButton missionId={mission.id} on="page" /> : null}
       </View>
+
+      <ThemedText type="heading" numberOfLines={2}>
+        {mission.title}
+      </ThemedText>
 
       <View style={styles.facts}>
         {facts.map((fact) => (
@@ -85,12 +88,9 @@ export function MissionCard({ mission, audience = 'student' }: MissionCardProps)
             <Badge label={t(`missions.status.${mission.status}`)} tone={STATUS_TONE[mission.status]} />
           </View>
         ) : (
-          <View style={styles.inline}>
-            <ThemedText type="smallBold" themeColor="primary">
-              {t('missions.view')}
-            </ThemedText>
-            <Icon name="chevronRight" size={16} color={theme.primary} />
-          </View>
+          <ThemedText type="caption" themeColor="textSecondary">
+            {formatPosted(mission.postedDaysAgo, t)} · {mission.applicants} {t('missions.applicants')}
+          </ThemedText>
         )}
       </View>
     </PressableScale>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: Spacing.three,
   },
   headerText: {
